@@ -10,8 +10,8 @@
 
 It runs as a [Claude artifact](https://claude.ai): the translation calls Claude through the artifact runtime, so it uses the viewer's own Claude plan. There is no API key and no server.
 
-![Puente on desktop during the sample conversation](docs/screenshot-desktop.png)
-<sub>The scripted sample conversation, which is what plays outside claude.ai. Live translations look the same.</sub>
+![Puente installed as a desktop app, translating a casual Korean conversation live](docs/demo-desktop-app.gif)
+<sub>Live translations in Puente installed as a desktop app from the Claude desktop app. The Korean speaker uses 반말, so the English reply comes back in 반말 too.</sub>
 
 ## How the translation works
 
