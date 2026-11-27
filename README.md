@@ -6,6 +6,8 @@
 
 **A two-sided live interpreter for Korean ⇄ English and Spanish ⇄ Korean that gets Korean politeness right.** Korean grammar changes with how polite you are being: 존댓말 (polite) or 반말 (casual). Most translators pick one and stay there. Puente listens to how the Korean speaker talks and answers in the same speech level, and it carries that level into Spanish as _usted_ or _tú_.
 
+**[Watch the demo](https://dojedaro.github.io/puente-translator/)** (a scripted sample conversation; live translation runs inside claude.ai).
+
 It runs as a [Claude artifact](https://claude.ai): the translation calls Claude through the artifact runtime, so it uses the viewer's own Claude plan. There is no API key and no server.
 
 ![Puente on desktop during the sample conversation](docs/screenshot-desktop.png)
