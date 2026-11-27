@@ -63,6 +63,9 @@ test('analyzeKorean: mixed levels and written 해라체 are flagged', () => {
   assert.equal(koreanRegisterOf('고마워요! 내일 봐.'), 'mixed');
   assert.equal(analyzeKorean('나는 학생이다. 한국어를 공부한다.').plainStyle, true);
   assert.equal(analyzeKorean('나 학생이야. 한국어 공부해.').plainStyle, false);
+  // Found by the first eval run: -자 ("let's") is everyday spoken 반말, not written style.
+  assert.equal(analyzeKorean('내일 일곱 시에 만나자.').plainStyle, false);
+  assert.equal(analyzeKorean('뭐 하냐?').plainStyle, false);
   assert.equal(
     analyzeKorean('이거 진짜 맛있다!').plainStyle,
     false,

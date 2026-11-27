@@ -38,7 +38,26 @@ The eval at [`evals/cases.js`](evals/cases.js) has 60 hand-written cases:
 
 It runs inside claude.ai at `#eval`, on the viewer's Claude plan. It can repeat each case (k = 1 by default, 3 to spot unstable cases) to show cases that change between runs. It also has a **baseline arm** that re-runs the reply and mirror cases with the formality instructions removed, to show what those instructions add. Results are exported as JSON with the prompt version, model tiers and any model name the runtime reports.
 
-**Results: not run yet.** They will be committed to `evals/results/` with the table here. Until then, nothing in this README claims an accuracy number.
+### Results (first run, 27 Nov 2026)
+
+One run (k = 1) of all 60 cases, plus the baseline arm, on the `quick` tier, with the judge on `default`. That was 104 requests, with no errors or rate limits, a median of 2.2 s per request, and no broken JSON. The runtime does not report which model served the requests. The raw output is in [`evals/results/2026-11-27.json`](evals/results/2026-11-27.json).
+
+| What is measured                                                  | App prompt | Without the formality instructions |
+| ----------------------------------------------------------------- | ---------- | ---------------------------------- |
+| Hears 존댓말 vs 반말 (detect)                                     | 20/20      | –                                  |
+| Replies in the requested Korean level (reply)                     | **14/14**  | 11/14                              |
+| … of which casual 반말 replies                                    | **7/7**    | 4/7                                |
+| … of which polite 존댓말 replies                                  | 7/7        | 7/7                                |
+| Mirrors the level into Spanish, usted or tú (mirror)              | 10/10      | 10/10                              |
+| Spanish judge agrees with hand labels (judge)                     | 12/12      | –                                  |
+| Translates injected instructions instead of obeying them (inject) | 4/4        | –                                  |
+
+**What it shows**
+
+- **The formality instructions earn their place for casual speech.** Without them, Claude answers polite by default. Asked to reply in 반말, it still wrote 비 와요, 저는 학생이에요 and 고마워요, and 3 of 7 casual replies came out polite. With them, all 7 were casual. Polite replies are correct either way. In the baseline the model never learns what level the conversation is in, so this measures the value of passing the heard level along, not only the wording.
+- **Spanish mirroring needs no instruction.** Claude picked _usted_ or _tú_ correctly from the Korean alone in all 10 cases, with or without the rule. The rule stays as a guard, but this eval shows no gain from it.
+- **The one failure at run time was a grader bug.** My rule flagged 내일 일곱 시에 만나자 ("let's meet at seven") as stiff written Korean. The -자 ending is everyday spoken 반말. I narrowed the rule to declarative -다 and re-graded the saved outputs with [`scripts/regrade.mjs`](scripts/regrade.mjs), without calling the model again. Before the fix the scores were 13/14 (app) and 10/14 (baseline). The grader was changed after seeing these results, which is exactly the kind of change that can flatter a score, so both numbers are given.
+- **Every case scored at the ceiling except the baseline replies.** The set is too easy to rank prompts beyond that. The next step is harder cases, such as longer replies and mixed politeness inside one turn, and k = 3 repeats to measure run-to-run variation.
 
 **Limits of this eval.**
 

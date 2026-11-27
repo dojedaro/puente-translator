@@ -1,3 +1,4 @@
 node_modules
 docs/*.png
 package-lock.json
+evals/results/*.json
