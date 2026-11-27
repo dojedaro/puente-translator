@@ -51,8 +51,12 @@ function endsInB(syllable) {
 /** Acknowledgements that carry no speech level on their own. */
 const NEUTRAL = new Set(['네', '예', '아', '음', '와', '오']);
 
-/** Endings of 해라체, the plain written style: correct 반말 for narration, stiff in conversation. */
-const PLAIN_STYLE = /(다|니|냐|자|라|렴|구나|군)$/;
+/**
+ * Declarative -다, the mark of 해라체 written style ("나는 학생이다"): stiff in conversation.
+ * Other 해라체 endings are normal casual speech and are not flagged: -자 ("만나자", let's meet),
+ * -냐/-니 questions, -구나/-군 exclamations. (The first eval run flagged -자 by mistake.)
+ */
+const PLAIN_STYLE = /다$/;
 
 function levelOf(sentence) {
   const s = sentence;
