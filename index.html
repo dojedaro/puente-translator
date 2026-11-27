@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Puente Voice Translator</title>
+    <meta
+      name="description"
+      content="Two-sided voice interpreter for Korean ⇄ English and Spanish ⇄ Korean."
+    />
+    <link rel="icon" href="docs/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="docs/icon-iphone.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="bar">
+      <h1 class="brand">Puente <small>다리 · bridge</small></h1>
+      <div class="ctl">
+        <div class="seg" role="group" aria-label="Language pair">
+          <button type="button" data-action="pair" data-value="koen" aria-pressed="true">
+            한국어 ⇄ English
+          </button>
+          <button type="button" data-action="pair" data-value="esko" aria-pressed="false">
+            Español ⇄ 한국어
+          </button>
+        </div>
+        <div class="seg" role="group" aria-label="Korean formality">
+          <button
+            type="button"
+            data-action="tone"
+            data-value="auto"
+            aria-pressed="true"
+            title="Match how the Korean speaker talks"
+          >
+            자동 Auto
+          </button>
+          <button
+            type="button"
+            data-action="tone"
+            data-value="formal"
+            aria-pressed="false"
+            title="Always 존댓말"
+          >
+            존댓말
+          </button>
+          <button
+            type="button"
+            data-action="tone"
+            data-value="casual"
+            aria-pressed="false"
+            title="Always 반말"
+          >
+            반말
+          </button>
+        </div>
+        <button type="button" class="chip" id="read-aloud" data-action="read-aloud" aria-pressed="true">
+          Read aloud: on
+        </button>
+        <button type="button" class="chip" data-action="face-to-face" aria-pressed="false">
+          Face to face
+        </button>
+        <button type="button" class="chip" id="swap" data-action="swap">Swap who's on top</button>
+        <button type="button" class="chip" id="demo" data-action="demo" aria-pressed="false">
+          Watch demo
+        </button>
+        <button type="button" class="chip" id="install" hidden>Install app</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="stage" id="stage" aria-label="Conversation sides">
+        <div class="side A active" id="A">
+          <div class="scene"></div>
+          <div class="content"></div>
+        </div>
+        <div class="side B active" id="B">
+          <div class="scene"></div>
+          <div class="content"></div>
+        </div>
+      </section>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+
+      <section class="band" aria-labelledby="transcript-title">
+        <div class="lh">
+          <div>
+            <h2 id="transcript-title">Conversation</h2>
+            <p class="note">Saved on this device only.</p>
+          </div>
+          <div class="lh-actions">
+            <button type="button" class="chip" data-action="copy-all">Copy transcript</button>
+            <button type="button" class="chip" data-action="clear">Clear</button>
+          </div>
+        </div>
+        <ul id="log"></ul>
+        <div class="tips">
+          <p>
+            <b>Speak:</b> tap a mic, talk, then tap it again. The translation appears on the other side and is
+            read aloud.
+          </p>
+          <p>
+            <b>On iPhone:</b> tap the text box, then the mic key on the keyboard. Dictation follows the
+            keyboard's language, so add Korean and Spanish keyboards in Settings › General › Keyboard and tap
+            the globe key to switch before each person speaks.
+          </p>
+          <p>
+            <b>Better iPhone voices:</b> Settings › Accessibility › Spoken Content › Voices. Download the
+            Premium or Enhanced voice for Korean, English and Spanish (Mexico). The app picks the best one it
+            finds.
+          </p>
+          <p>
+            <b>Face to face:</b> lay the phone flat between you. The top half's words turn to face the person
+            across the table, so they look upside down to you. That is on purpose. Use "Swap who's on top" to
+            choose which language faces them.
+          </p>
+          <p>
+            <b>Formality:</b> on 자동 Auto, the app listens to how the Korean speaker talks. 존댓말 in means
+            존댓말 back, 반말 in means 반말 back. Spanish follows the same rule: 존댓말 becomes usted, 반말
+            becomes tú.
+          </p>
+          <p>
+            <b>Scenes:</b> English shows Canada, 한국어 shows Korea, Español shows Mexico. The side that is
+            speaking comes forward, then the translation's country takes over.
+          </p>
+        </div>
+        <p class="eval-link">
+          <a href="#eval">Run the formality eval</a> to check how well Puente matches 존댓말, 반말, usted and
+          tú.
+        </p>
+      </section>
+      <section class="band" id="eval" hidden aria-label="Formality eval"></section>
+    </main>
+  </body>
+</html>
