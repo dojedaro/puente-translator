@@ -60,10 +60,20 @@ const state = {
 const speaker = createSpeaker({ synth: typeof speechSynthesis === 'undefined' ? null : speechSynthesis });
 let dictation = null;
 
+const isIOS =
+  /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (/Mac/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+/** Where Claude's mic is not offered (an installed app window, Safari), the computer's own voice typing still works in the text box. */
+function systemVoiceTypingTip(userAgent) {
+  if (/Windows/.test(userAgent)) return 'press Windows key + H and speak';
+  if (/Mac/.test(userAgent)) return 'press the Fn (🌐) key twice and speak';
+  return null;
+}
+
 const view = createView(state, {
-  isIOS:
-    /iPhone|iPad|iPod/.test(navigator.userAgent) ||
-    (/Mac/.test(navigator.userAgent) && navigator.maxTouchPoints > 1),
+  isIOS,
+  systemVoiceTyping: isIOS ? null : systemVoiceTypingTip(navigator.userAgent),
   listening: () => dictation?.listening ?? null,
   hasMic: () => Boolean(dictation),
 });
@@ -169,7 +179,17 @@ function connectDictation(capability) {
 }
 
 function toggleMic(side) {
-  if (!dictation) return;
+  if (!dictation) {
+    const tip = systemVoiceTypingTip(navigator.userAgent);
+    if (!tip || isIOS) return;
+    $(side).querySelector('form.type input')?.focus();
+    view.setFocus(side, true);
+    setStatus(
+      `Claude's mic isn't offered in this window, so use your computer's: ${tip}, then press Enter. ` +
+        "(Claude's mic works when Puente is open in Chrome or beside a chat in the Claude app.)",
+    );
+    return;
+  }
   if (dictation.listening) {
     dictation.stop();
     return;

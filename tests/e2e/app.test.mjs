@@ -151,7 +151,7 @@ test('a rate limit shows a clear message and frees the app', async () => {
 
 test('speaking into the mic translates what was heard', async () => {
   const { page } = await openPage({ claude: { replies: REPLIES, withMic: true } });
-  await page.waitForSelector('#A .mic:not([hidden])');
+  await page.waitForSelector('#A .mic:not([hidden]):not(.assist)');
   await page.click('#A .mic');
   assert.equal(await page.getAttribute('#A .mic', 'aria-pressed'), 'true');
   await page.evaluate(() => window.__mic.partial({ text: '야, 오랜' }));
@@ -161,6 +161,24 @@ test('speaking into the mic translates what was heard', async () => {
   await page.waitForSelector('#log li');
   assert.equal(await page.textContent('#B .big'), 'Hey, long time no see!');
   await page.close();
+});
+
+test("without Claude's mic (an installed app window) the mic points to Windows voice typing", async () => {
+  const context = await browser.newContext({
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36',
+  });
+  const page = await context.newPage();
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.fulfill({ status: 200, body: '' }));
+  await page.addInitScript(installFakeClaude, { replies: REPLIES });
+  await page.goto(url);
+  await page.click('#A .mic.assist');
+  assert.match(await page.textContent('#status'), /Windows key \+ H/);
+  assert.ok(
+    await page.$eval('#A input', (el) => el === document.activeElement),
+    'the text box is ready for voice typing',
+  );
+  await context.close();
 });
 
 test('face to face flips one side and Swap changes which one', async () => {

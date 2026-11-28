@@ -13,7 +13,9 @@ const MIC_ICON =
 
 /**
  * @param {object} state  shared app state (read only here)
- * @param {{isIOS: boolean, listening: () => ('A'|'B'|null), hasMic: () => boolean}} env
+ * @param {{isIOS: boolean, systemVoiceTyping: string|null, listening: () => ('A'|'B'|null), hasMic: () => boolean}} env
+ *   systemVoiceTyping: how to start the computer's own voice typing when Claude's mic is not
+ *   offered (for example in an installed app window); the mic then shows that tip instead.
  */
 export function createView(state, env) {
   function replayReveal(scene) {
@@ -107,8 +109,8 @@ export function createView(state, env) {
       <div class="live" lang="${code}" aria-live="polite">${liveMarkup(side)}</div>
       <div class="quick" role="group" aria-label="Quick phrases in ${lang.english}" lang="${code}">${quick}</div>
       <div class="dock">
-        <button type="button" class="mic${listening ? ' on' : ''}" data-action="mic" data-side="${side}"
-          aria-label="${lang.speak} (${lang.english})" aria-pressed="${listening}" ${env.hasMic() ? '' : 'hidden'}>${MIC_ICON}</button>
+        <button type="button" class="mic${listening ? ' on' : ''}${env.hasMic() ? '' : ' assist'}" data-action="mic" data-side="${side}"
+          aria-label="${lang.speak} (${lang.english})" aria-pressed="${listening}" ${env.hasMic() || env.systemVoiceTyping ? '' : 'hidden'}>${MIC_ICON}</button>
         <form class="type" data-side="${side}">
           <input lang="${code}" aria-label="Type in ${lang.english}" placeholder="${escapeHtml(placeholder)}" autocomplete="off" enterkeyhint="send">
           <button type="submit">${lang.send}</button>
